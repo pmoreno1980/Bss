@@ -1,0 +1,56 @@
+<?php
+/**
+ * BSS Commerce Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://bsscommerce.com/Bss-Commerce-License.txt
+ *
+ * @category   BSS
+ * @package    Bss_GroupedProductOption
+ * @author     Extension Team
+ * @copyright  Copyright (c) 2017-2018 BSS Commerce Co. ( http://bsscommerce.com )
+ * @license    http://bsscommerce.com/Bss-Commerce-License.txt
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+
+<?php
+/** @var $block \Bss\GroupedProductOption\Block\Product\View\Type\Configurable*/
+$_product    = $block->getProduct();
+$_attributes = $block->decorateArray($block->getAllowAttributes());
+$productId = $_product->getId();
+?>
+<?php if ($_product->isSaleable() && count($_attributes)):?>
+    <?php foreach ($_attributes as $_attribute): ?>
+        <div class="field configurable required">
+            <label class="label" for="attribute-<?= $productId; ?>-<?= $_attribute->getAttributeId() ?>">
+                <span><?= $block->escapeHtml($_attribute->getProductAttribute()->getStoreLabel()) ?></span>
+            </label>
+            <div class="control">
+                <select name="super_attribute[<?= $productId ?>][<?= /* @escapeNotVerified */ $_attribute->getAttributeId() ?>]"
+                        data-selector="super_attribute[<?= $productId ?>][<?= /* @escapeNotVerified */ $_attribute->getAttributeId() ?>]"
+                        data-product="<?= $_attribute->getAttributeId() ?>"
+                        id="attribute-<?= $productId; ?>-<?= /* @escapeNotVerified */ $_attribute->getAttributeId() ?>"
+                        class="super-attribute-select-<?= $productId; ?> super-attribute-select">
+                    <option value=""><?= /* @escapeNotVerified */ __('Choose an Option...') ?></option>
+                </select>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    <script type="text/x-magento-init">
+        {
+            ".bss-gpo-child-product-id-<?= $productId; ?>": {
+                "bss/groupedProductOptionConfigurable": {
+                    "spConfig-<?= $productId; ?>": <?= /* @escapeNotVerified */ $block->getJsonConfig() ?>,
+                    "jsonGroupedConfigurable": <?php /* @noEscape */ echo $block->getJsonGroupedConfigurable(); ?>
+                }
+            }
+        }
+    </script>
+<?php endif;?>

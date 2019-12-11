@@ -1,0 +1,49 @@
+<?php
+/**
+ * BSS Commerce Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://bsscommerce.com/Bss-Commerce-License.txt
+ *
+ * @category   BSS
+ * @package    Bss_ProductCustomTabs
+ * @author     Extension Team
+ * @copyright  Copyright (c) 2017-2018 BSS Commerce Co. ( http://bsscommerce.com )
+ * @license    http://bsscommerce.com/Bss-Commerce-License.txt
+ */
+?>
+<?php
+// @codingStandardsIgnoreFile
+?>
+<?php
+/** @var $blockGrid \Magento\Catalog\Block\Adminhtml\Category\Tab\Product*/
+?>
+<?php
+$blockGrid = $block->getBlockGrid();
+$gridJsObjectName = $blockGrid->getJsObjectName();
+?>
+<div>
+	<?php echo __("Please choose product attributes to show on this custom tab.");?>
+</div>
+<?= $block->getGridHtml() ?>
+<input type="hidden" name="attributes" id="in_category_products" data-form-part="category_form" value="" />
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Bss_ProductCustomTabs/js/tab/attributes/assign-attributes": {
+                "selectedProducts": <?= /* @escapeNotVerified */ $block->getProductsJson() ?>,
+                "gridJsObjectName": <?= /* @escapeNotVerified */ '"' . $gridJsObjectName . '"' ?: '{}' ?>
+            }
+        }
+    }
+</script>
+<!-- @todo remove when "UI components" will support such initialization -->
+
+
+
+
+

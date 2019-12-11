@@ -1,0 +1,83 @@
+<?php
+/**
+ * BSS Commerce Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://bsscommerce.com/Bss-Commerce-License.txt
+ *
+ * =================================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * =================================================================
+ * This package designed for Magento COMMUNITY edition
+ * BSS Commerce does not guarantee correct work of this extension
+ * on any other Magento edition except Magento COMMUNITY edition.
+ * BSS Commerce does not provide extension support in case of
+ * incorrect edition usage.
+ * =================================================================
+ *
+ * @category   BSS
+ * @package    Bss_GroupedProductOption
+ * @author     Extension Team
+ * @copyright  Copyright (c) 2017-2018 BSS Commerce Co. ( http://bsscommerce.com )
+ * @license    http://bsscommerce.com/Bss-Commerce-License.txt
+ */
+?>
+<?php
+$option = $block->getOption();
+$class = ($option->getIsRequire()) ? ' required' : '';
+$productId = $block->getProduct()->getId();
+?>
+
+<div class="field<?php echo ($option->getType() == \Magento\Catalog\Model\Product\Option::OPTION_TYPE_AREA) ? ' textarea' : ''; ?>
+    <?php /* @escapeNotVerified */ echo $class ?>">
+    <label class="label" for="options_<?php /* @escapeNotVerified */ echo $productId . '_' . $option->getId() ?>_text">
+        <span><?php echo $block->escapeHtml($option->getTitle()) ?></span>
+        <?php /* @escapeNotVerified */ echo $block->getFormatedPrice() ?>
+    </label>
+
+    <div class="control">
+        <?php if ($option->getType() == \Magento\Catalog\Model\Product\Option::OPTION_TYPE_FIELD) : ?>
+            <?php $textValidate = null;
+            if ($option->getMaxCharacters()) {
+                $textValidate['maxlength'] = $option->getMaxCharacters();
+            }
+            ?>
+            <input type="text"
+                   id="options_<?php /* @escapeNotVerified */ echo $productId . '_' . $option->getId() ?>_text"
+                   class="input-text product-custom-option <?php echo $option->getIsRequire() ? 'required' : '' ?>"
+                    <?php if (!empty($textValidate)) {?>
+                   data-validate="<?php echo $block->escapeHtml(json_encode($textValidate));?>"
+                    <?php } ?>
+                   name="options_<?php /* @escapeNotVerified */ echo $productId ?>[<?php /* @escapeNotVerified */ echo $option->getId() ?>]"
+                   data-selector="options[<?php /* @escapeNotVerified */ echo $productId ?>][<?php /* @escapeNotVerified */ echo $option->getId() ?>]"
+                   value="<?php echo $block->escapeHtml($block->getDefaultValue()) ?>"/>
+        <?php elseif ($option->getType() == \Magento\Catalog\Model\Product\Option::OPTION_TYPE_AREA) : ?>
+            <?php $textAreaValidate = null;
+            if ($option->getIsRequire()) {
+                $textAreaValidate['required'] = true;
+            }
+
+            if ($option->getMaxCharacters()) {
+                $textAreaValidate['maxlength'] = $option->getMaxCharacters();
+            }
+            ?>
+            <textarea id="options_<?php /* @escapeNotVerified */ echo $productId . '_' . $option->getId() ?>_text"
+                      class="product-custom-option"
+                    <?php if (!empty($textAreaValidate)) {?>
+                        data-validate="<?php echo $block->escapeHtml(json_encode($textAreaValidate));?>"
+                    <?php } ?>
+                      name="options_<?php /* @escapeNotVerified */ echo $productId ?>[<?php /* @escapeNotVerified */ echo $option->getId() ?>]"
+                      data-selector="options[<?php /* @escapeNotVerified */ echo $productId ?>][<?php /* @escapeNotVerified */ echo $option->getId() ?>]"
+                      rows="5"
+                      cols="25"><?php echo $block->escapeHtml($block->getDefaultValue()) ?></textarea>
+        <?php endif; ?>
+        <?php if ($option->getMaxCharacters()) : ?>
+            <p class="note"><?php /* @escapeNotVerified */ echo __('Maximum number of characters:') ?>
+                <strong><?php /* @escapeNotVerified */ echo $option->getMaxCharacters() ?></strong></p>
+        <?php endif; ?>
+    </div>
+</div>

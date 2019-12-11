@@ -1,0 +1,135 @@
+<?php
+/**
+ * BSS Commerce Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://bsscommerce.com/Bss-Commerce-License.txt
+ *
+ * =================================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * =================================================================
+ * This package designed for Magento COMMUNITY edition
+ * BSS Commerce does not guarantee correct work of this extension
+ * on any other Magento edition except Magento COMMUNITY edition.
+ * BSS Commerce does not provide extension support in case of
+ * incorrect edition usage.
+ * =================================================================
+ *
+ * @category   BSS
+ * @package    Bss_GroupedProductOption
+ * @author     Extension Team
+ * @copyright  Copyright (c) 2017-2018 BSS Commerce Co. ( http://bsscommerce.com )
+ * @license    http://bsscommerce.com/Bss-Commerce-License.txt
+ */
+?>
+<?php $option = $block->getOption(); ?>
+<?php $fileInfo = $block->getFileInfo(); ?>
+<?php $fileExists = $fileInfo->hasData(); ?>
+<?php $productId = $block->getProduct()->getId();?>
+<?php $fileName = 'options_' . $option->getId() . '_file'; ?>
+<?php $fieldNameAction = $fileName . '_action'; ?>
+<?php $fieldValueAction = $fileExists ? 'save_old' : 'save_new'; ?>
+<?php $fileNamed = $fileName . '_name'; ?>
+<?php $class = ($option->getIsRequire()) ? ' required' : ''; ?>
+
+<div class="field file<?php /* @escapeNotVerified */ echo $class; ?>">
+    <label class="label"
+           for="<?php /* @noEscape */ echo $fileName; ?>"
+           id="<?php /* @noEscape */ echo $fileName; ?>-label">
+        <span><?php echo  $block->escapeHtml($option->getTitle()) ?></span>
+        <?php /* @escapeNotVerified */ echo $block->getFormatedPrice() ?>
+    </label>
+    <?php if ($fileExists) : ?>
+    <div class="control">
+        <span class="<?php /* @noEscape */ echo $fileNamed ?>"><?php echo $block->escapeHtml($fileInfo->getTitle()); ?>
+        </span>
+        <a href="javascript:void(0)" class="label" id="change-<?php /* @noEscape */ echo $fileName ?>" >
+            <?php /* @escapeNotVerified */ echo __('Change') ?>
+        </a>
+        <?php if (!$option->getIsRequire()) : ?>
+            <input type="checkbox" id="delete-<?php /* @escapeNotVerified */ echo $fileName ?>" />
+            <span class="label"><?php /* @escapeNotVerified */ echo __('Delete') ?></span>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+    <div class="control" id="input-box-<?php /* @escapeNotVerified */ echo $fileName ?>"
+             data-mage-init='{"priceOptionFile":{
+                "fileName":"<?php /* @noEscape */ echo $fileName ?>",
+                "fileNamed":"<?php /* @noEscape */ echo $fileNamed ?>",
+                "fieldNameAction":"<?php /* @escapeNotVerified */ echo $fieldNameAction ?>",
+                "changeFileSelector":"#change-<?php /* @escapeNotVerified */ echo $fileName ?>",
+                "deleteFileSelector":"#delete-<?php /* @escapeNotVerified */ echo $fileName ?>"},
+                "theBssValidationMethod":{}
+             }'
+            <?php echo $fileExists ? 'style="display:none"' : '' ?>>
+
+        <input type="file"
+               name="bss-gpo-option-<?php /* @escapeNotVerified */ echo $productId;?>[<?php /* @escapeNotVerified */ echo $fileName; ?>]"
+               id="<?php /* @escapeNotVerified */ echo $fileName; ?>"
+               data-option-id="<?php echo $option->getId(); ?>"
+               class="bss-file product-custom-option <?php echo $option->getIsRequire() ? 'required' : '' ?>"
+                <?php echo $fileExists ? 'disabled="disabled"' : '' ?> />
+        <input type="hidden"
+               name="bss-gpo-option-<?php /* @escapeNotVerified */ echo $productId;?>[<?php /* @escapeNotVerified */ echo $fieldNameAction; ?>]"
+               value="<?php /* @escapeNotVerified */ echo $fieldValueAction; ?>" />
+        <?php if ($option->getFileExtension()) : ?>
+            <p class="note">
+                <?php /* @escapeNotVerified */ echo __('Compatible file extensions to upload')?>:
+                <strong><?php /* @escapeNotVerified */ echo $option->getFileExtension() ?></strong>
+            </p>
+        <?php endif; ?>
+        <?php if ($option->getImageSizeX() > 0) : ?>
+            <p class="note">
+                <?php /* @escapeNotVerified */ echo __('Maximum image width')?>: <strong><?php /* @escapeNotVerified */ echo $option->getImageSizeX() ?> <?php /* @escapeNotVerified */ echo __('px.')?></strong>
+            </p>
+        <?php endif; ?>
+        <?php if ($option->getImageSizeY() > 0) : ?>
+            <p class="note">
+                <?php /* @escapeNotVerified */ echo __('Maximum image height')?>:
+                <strong>
+                    <?php /* @escapeNotVerified */ echo $option->getImageSizeY() ?>
+                    <?php /* @escapeNotVerified */ echo __('px.')?>
+                </strong>
+            </p>
+        <?php endif; ?>
+    </div>
+</div>
+
+<script type="text/x-magento-init">
+    {
+        "*":{
+            "Bss_GroupedProductOption/js/validate/file-validate":{
+                "extensions": "<?php echo $option->getFileExtension() ?>"
+            }
+        }
+    }
+</script>
+<?php
+    $extensions = $option->getFileExtension();
+    $extensions = preg_replace('/\s+/', '', $extensions);
+?>
+<script type="text/javascript">
+    window.Extension = <?php echo '"'.$extensions.'"' ?>;
+    window.imgMaxWidth = <?php echo $option->getImageSizeX() ?>;
+    window.imgMaxHeight = <?php echo $option->getImageSizeY() ?>;
+    var _URL = window.URL || window.webkitURL;
+    require([
+        'jquery'
+    ], function ($) {
+        $(".bss-file").change(function() {
+            var file, img;
+            if ((file = this.files[0])) {
+                img = new Image();
+                img.onload = function() {
+                    window.imgWidth = this.width;
+                    window.imgHeight = this.height;
+                };
+                img.src = _URL.createObjectURL(file);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,201 @@
+<?php
+/**
+ * BSS Commerce Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at thisURL:
+ * http://bsscommerce.com/Bss-Commerce-License.txt
+ *
+ * @category   BSS
+ * @package    Bss_ProductCustomTabs
+ * @author     Extension Team
+ * @copyright  Copyright (c) 2017-2018 BSS Commerce Co. ( http://bsscommerce.com )
+ * @license    http://bsscommerce.com/Bss-Commerce-License.txt
+ */
+?>
+<?php
+// @codingStandardsIgnoreFile
+?>
+<?php
+/** @var $block Magento\Catalog\Block\Product\View\Description*/
+?>
+<?php
+$helperTabs = $this->helper('Bss\ProductCustomTabs\Helper\Product\View\Tabs');
+
+$arrTabs = $helperTabs->getTabsByStoreView();
+if (is_array($arrTabs) && !empty($arrTabs)) :?>
+    <div class="product info detailed">
+        <div class="product data items" data-mage-init='{"tabs":{"openedState":"active"}}'>
+            <?php if ($detailedInfoGroup = $block->getGroupChildNames('detailed_info', 'getChildHtml')):?>
+                <?php
+                $hide = $helperTabs->getConfigHideDefaultTabs();
+                if (!$hide) {
+                    $layout = $block->getLayout();
+
+                    ?>
+                    <?php foreach ($detailedInfoGroup as $name):?>
+                        <?php
+                        $html = $layout->renderElement($name);
+                        if (!trim($html)) {
+                            continue;
+                        }
+                        $alias = $layout->getElementAlias($name);
+                        $label = $block->getChildData($alias, 'title');
+                        ?>
+                        <div class="data item title"
+                             aria-labeledby="tab-label-<?= $alias ?>-title"
+                             data-role="collapsible" id="tab-label-<?= $alias ?>">
+                            <a class="data switch"
+                               tabindex="-1"
+                               data-toggle="switch"
+                               href="#<?= $alias ?>"
+                               id="tab-label-<?=$alias ?>-title">
+                                <?= $label ?>
+                            </a>
+                        </div>
+                    <?php endforeach;
+                }
+                ?>
+            <?php endif; ?>
+            <?php foreach ($arrTabs as $tab):?>
+
+                <?php
+                $html = $helperTabs->editTabContent($tab['content']);
+                if (!trim($html)) {
+                    continue;
+                }
+                $alias = 'product_tab_' . $tab['tab_id'];
+                $label = $tab['title'];
+                ?>
+                <div class="data item title"
+                     aria-labeledby="tab-label-<?= /* @escapeNotVerified */ $alias ?>-title"
+                     data-role="collapsible" id="tab-label-<?= /* @escapeNotVerified */ $alias ?>">
+                    <a class="data switch"
+                       tabindex="-1"
+                       data-toggle="switch"
+                       href="#<?= /* @escapeNotVerified */ $alias ?>"
+                       id="tab-label-<?= /* @escapeNotVerified */ $alias ?>-title">
+                        <?= /* @escapeNotVerified */ $label ?>
+                    </a>
+                </div>
+            <?php endforeach;?>
+            <?php if ($detailedInfoGroup = $block->getGroupChildNames('detailed_info', 'getChildHtml')):?>
+                <?php
+                $hide = $helperTabs->getConfigHideDefaultTabs();
+                if (!$hide) {
+                    $layout = $block->getLayout();
+
+                    ?>
+                    <?php foreach ($detailedInfoGroup as $name):?>
+                        <?php
+                        $html = $layout->renderElement($name);
+                        if (!trim($html)) {
+                            continue;
+                        }
+                        $alias = $layout->getElementAlias($name);
+                        $label = $block->getChildData($alias, 'title');
+                        ?>
+                        <div class="data item content" id="<?= $alias ?>" data-role="content">
+                            <?= $html ?>
+                        </div>
+                    <?php endforeach;
+                }
+                ?>
+            <?php endif; ?>
+            <?php foreach ($arrTabs as $tab):?>
+
+                <?php
+                $html = $helperTabs->editTabContent($tab['content']);
+                if (!trim($html)) {
+                    continue;
+                }
+                $alias = 'product_tab_' . $tab['tab_id'];
+                $label = $tab['title'];
+                ?>
+                <div class="data item content" id="<?= /* @escapeNotVerified */ $alias ?>" data-role="content">
+                    <?= /* @escapeNotVerified */ $html ?>
+                    <div id="attributes_tab">
+                        <?php $content = $helperTabs->getAttributesContent($tab['attribute_ids']);
+                        if ($content != '') :?>
+                            <br>
+                            <hr class="bss_product_tab">
+                            <br>
+                            <table>
+                                <?= /* @escapeNotVerified */ $content ?>
+                            </table>
+                        <?php endif; ?>
+                    </div>
+
+                    <div>
+                        <?php $content = $helperTabs->getRelatedProductContent($tab['show_related_products']);
+                        if ($content != '' && strlen($helperTabs->editTabContent($content)) > 10) :?>
+                            <br>
+                            <hr class="bss_product_tab">
+                            <br>
+                            <?= /* @escapeNotVerified */ $helperTabs->editTabContent($content) ?>
+                        <?php endif; ?>
+                    </div>
+                    <div>
+                        <?php $content = $helperTabs->getUpsellProductContent($tab['show_up_sell_products']);
+                        if ($content != '' && strlen($helperTabs->editTabContent($content)) > 10) :?>
+                            <br>
+                            <hr class="bss_product_tab">
+                            <br>
+
+                            <?= /* @escapeNotVerified */ $helperTabs->editTabContent($content) ?>
+                        <?php endif; ?>
+                    </div>
+                    <div>
+                        <?php $content = $helperTabs->getCrosssellProductContent($tab['show_cross_sell_products']);
+                        if ($content != '' && strlen($helperTabs->editTabContent($content)) > 10) :?>
+                            <br>
+                            <hr class="bss_product_tab">
+                            <br>
+                            <?= /* @escapeNotVerified */ $helperTabs->editTabContent($content) ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach;?>
+        </div>
+    </div>
+<?php else: ?>
+    <?php
+    $hide = $helperTabs->getConfigHideDefaultTabs();
+    $detailedInfoGroup = $block->getGroupChildNames('detailed_info', 'getChildHtml');
+    if (!$hide) {
+
+        $layout = $block->getLayout();
+
+        ?>
+        <div class="product info detailed">
+        <div class="product data items" data-mage-init='{"tabs":{"openedState":"active"}}'>
+        <?php foreach ($detailedInfoGroup as $name):?>
+            <?php
+            $html = $layout->renderElement($name);
+            if (!trim($html)) {
+                continue;
+            }
+            $alias = $layout->getElementAlias($name);
+            $label = $block->getChildData($alias, 'title');
+            ?>
+            <div class="data item title"
+                 aria-labeledby="tab-label-<?= $alias ?>-title"
+                 data-role="collapsible" id="tab-label-<?= $alias ?>">
+                <a class="data switch"
+                   tabindex="-1"
+                   data-toggle="switch"
+                   href="#<?= $alias ?>"
+                   id="tab-label-<?=$alias ?>-title">
+                    <?= $label ?>
+                </a>
+            </div>
+            <div class="data item content" id="<?= $alias ?>" data-role="content">
+                <?= $html ?>
+            </div>
+        <?php endforeach; }?>
+    </div>
+    </div>
+<?php endif; ?>

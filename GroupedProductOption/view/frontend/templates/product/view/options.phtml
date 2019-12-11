@@ -1,0 +1,42 @@
+<?php
+/**
+ * BSS Commerce Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://bsscommerce.com/Bss-Commerce-License.txt
+ *
+ * @category   BSS
+ * @package    Bss_GroupedProductOption
+ * @author     Extension Team
+ * @copyright  Copyright (c) 2017-2018 BSS Commerce Co. ( http://bsscommerce.com )
+ * @license    http://bsscommerce.com/Bss-Commerce-License.txt
+ */
+
+// @codingStandardsIgnoreFile
+
+/* @var $block \Bss\GroupedProductOption\Block\Product\View\Options */
+?>
+
+<?php $_options = $block->decorateArray($block->getOptions()) ?>
+<?php $_productId = $block->getProduct()->getId() ?>
+<?php if (count($_options)):?>
+<script type="text/x-magento-init">
+    {
+        "#product_addtocart_form": {
+            "Bss_GroupedProductOption/js/price-options": {
+                "optionConfig": <?= /* @escapeNotVerified */ $block->getJsonConfig() ?>,
+                "controlContainer": ".field",
+                "priceHolderSelector": "[data-product-id='<?= $block->escapeHtml($_productId) ?>'][data-role=priceBox]",
+                "priceFormat": <?= /* @escapeNotVerified */ $block->getPriceFormat() ?>
+            }
+        }
+    }
+</script>
+    <?php foreach ($_options as $_option): ?>
+        <?= $block->getOptionHtml($_option) ?>
+    <?php endforeach; ?>
+<?php endif; ?>
